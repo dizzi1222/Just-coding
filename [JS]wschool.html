@@ -1,0 +1,80 @@
+<!doctype html>
+<html>
+  <body>
+    <h1>JavaScript Nested if</h1>
+    <!-- /////////////////////////////////////////////////////////////////////////////////// -->
+    <!-- // EJEMPLOS DE CONDICIONALES
+    <!-- /////////////////////////////////////////////////////////////////////////////////// -->
+
+    <!--EJ.1: --- CONDICIONALES --- -->
+    <p id="demo"></p>
+
+    <script>
+      let age = 10;
+      let country = "2";
+      // let text = "You can Not drive!";1
+      //
+      // if (country == "USA") {
+      //   if (age >= 16) {
+      //     text = "You can drive!";
+      //   }
+      // }
+      <!--EJ.2: --- TERNARIOS --- -->
+      // let text = age < 18 ? "Minor" : "Adult"; // Abreviatura de else if
+
+      // <!--EJ.3: --- SWITCH --- -->
+      let text;
+      switch (new Date().getDay()) {
+        // esto es un metodo de Date
+        case 6:
+          text = "Today is Saturday";
+          break;
+        case 0:
+          text = "Today is Sunday";
+          break;
+        default:
+          text = "Looking forward to the Weekend";
+      }
+      //Conclusion: Los ternarios son mas eficientes y usados en react. Else if es mas legible [y largo], pero menos eficiente.
+
+      // <!-- /////////////////////////////////////////////////////////////////////////////////// -->
+      // <!-- // EJEMPLOS DE BUCLES
+      // <!-- /////////////////////////////////////////////////////////////////////////////////// -->
+
+      // <!--EJ.1 INCREMENTO --- -->
+      for (let i = 0; i < 10; i++) {
+        // <--CONSOLE LOG --- -->
+        console.log(i);
+      }
+      // <!--EJ.2 DECREMENTO --- -->
+for (let i = 0; i < 5; i++) {
+  text += "The number is " + i + "<br>";
+}
+      // <!-- /////////////////////////////////////////////////////////////////////////////////// -->
+      // <!-- // EJEMPLOS DE ARRAYS
+      // <!-- /////////////////////////////////////////////////////////////////////////////////// -->
+      //Ej.1 Crear un array
+      const array = [1, 2, 3, 4, 5];
+
+      //Ej.2 Imprimir el array
+      console.log(array);
+
+      //Ej.3 Imprimir el array en un bucle
+      for (let i = 0; i < array.length; i++) {
+        console.log(array[i]);
+      }
+
+      // <!-- /////////////////////////////////////////////////////////////////////////////////// -->
+      // <!-- // EJEMPLOS DE OBJETOS
+      // <!-- /////////////////////////////////////////////////////////////////////////////////// -->
+      const obj = {
+        name: "Diego",
+        age: 10,
+        country: "Colombia",
+        isMale: true,
+      };
+      ``;
+
+    </script>
+  </body>
+</html>

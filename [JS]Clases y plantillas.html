@@ -1,0 +1,52 @@
+
+<!DOCTYPE html>
+<html>
+<body>
+<h1>JavaScript Class Inheritance</h1>
+
+<p>Use the "extends" keyword to inherit all methods from another class.</p>
+<p>Use the "super" method to call the parent's constructor function.</p>
+
+<p id="demo"></p>
+
+<script>
+class Car {
+  constructor(brand) {
+    this.carname = brand;
+  }
+  present() {
+    return 'I have a ' + this.carname;
+  }
+}
+
+class Model extends Car {
+  constructor(brand, mod) {
+    super(brand);
+    this.model = mod;
+  }
+  show() {
+    return this.present() + ', it is a ' + this.model;
+  }
+}
+
+const myCar = new Model("Ford", "Mustang");
+document.getElementById("demo").innerHTML = myCar.show();
+
+// Otro ejemplo de car mas sencillo y con imagen
+class Car2 {
+  constructor(brand, imageUrl) {
+    this.brand = brand;
+    this.imageUrl = imageUrl;
+  }
+  display() {
+    return `<h2>I have a ${this.brand}</h2><img src="${this.imageUrl}" alt="${this.brand}" width="300">`;
+    // Y para mostrarlo en el HTML usamos innerHTML
+  }
+
+}
+const myCar2 = new Car2("Tesla", "https://tesla-cdn.thron.com/delivery/public/image/tesla/8f4f4f3a-5d4e-4c3e-8b6e-8f6e6f6e6f6e/bvlatuR/std/2880x1800/M3-Homepage-D");
+document.getElementById("demo").innerHTML += myCar2.display();
+</script>
+
+</body>
+</html>

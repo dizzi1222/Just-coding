@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guía Completa: Callbacks, Promises, Async/Await y APIs</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #1e1e1e;
+            color: #d4d4d4;
+        }
+        h1 {
+            color: #4ec9b0;
+            border-bottom: 3px solid #569cd6;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #569cd6;
+            margin-top: 40px;
+        }
+        .section {
+            background: #2d2d2d;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            border-left: 4px solid #4ec9b0;
+        }
+        .demo-area {
+            background: #1e1e1e;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #3e3e3e;
+        }
+        button {
+            background: #0e639c;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        button:hover {
+            background: #1177bb;
+        }
+        .output {
+            background: #0d1117;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            color: #58a6ff;
+            min-height: 30px;
+        }
+        .code-explanation {
+            background: #0d1117;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border-left: 3px solid #f0883e;
+        }
+        .separator {
+            border: 0;
+            height: 2px;
+            background: linear-gradient(to right, transparent, #569cd6, transparent);
+            margin: 40px 0;
+        }
+        .note {
+            background: #3a2f0b;
+            padding: 10px;
+            border-radius: 5px;
+            border-left: 4px solid #dcdcaa;
+            margin: 10px 0;
+        }
+        .warning {
+            background: #4a1f1f;
+            padding: 10px;
+            border-radius: 5px;
+            border-left: 4px solid #f48771;
+            margin: 10px 0;
+        }
+        code {
+            background: #3e3e3e;
+            padding: 2px 6px;
+            border-radius: 3px;
+            color: #ce9178;
+        }
+        input {
+            padding: 8px;
+            margin: 5px;
+            border-radius: 4px;
+            border: 1px solid #569cd6;
+            background: #1e1e1e;
+            color: #d4d4d4;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+<h1>📚 Guía Completa: JavaScript Asíncrono y APIs</h1>
+
+<div class="note">
+    <strong>💡 Concepto clave:</strong> El código asíncrono permite ejecutar operaciones que toman tiempo (como peticiones a servidores) sin bloquear el resto del programa.
+</div>
+
+<hr class="separator">
+
+<!--////////////////////////////////////////////////////////////////////////-->
+<!--                        SECCIÓN 1: CALLBACKS                            -->
+<!--////////////////////////////////////////////////////////////////////////-->
+
+<div class="section">
+    <h2>1️⃣ CALLBACKS (Funciones de devolución de llamada)</h2>
+
+    <div class="code-explanation">
+        <strong>¿Qué es un Callback?</strong><br>
+        Una función que se pasa como argumento a otra función para ejecutarse después.
+        <br><br>
+        <strong>Sintaxis:</strong> <code>funcionPrincipal(parametro1, parametro2, miCallback)</code>
+        <br>
+        <strong>⚠️ IMPORTANTE:</strong> Se pasa SIN paréntesis → <code>miCallback</code> NO <code>miCallback()</code>
+    </div>
+
+    <h3>Ejemplo 1: Callback Básico</h3>
+    <div class="demo-area">
+        <button onclick="ejemploCallbackBasico()">Ejecutar Callback Básico</button>
+        <div class="output" id="output1">Presiona el botón...</div>
+    </div>
+
+    <div class="code-explanation">
+        <strong>Código ejecutado:</strong><br>
+        1. <code>myCalculator(5, 5, myDisplayer)</code> → Llama a la función con 2 números y un callback<br>
+        2. Dentro de myCalculator: <code>let sum = 5 + 5</code> → Calcula la suma<br>
+        3. <code>myCallback(sum)</code> → Ejecuta el callback pasándole el resultado<br>
+        4. myDisplayer recibe 10 y lo muestra en pantalla
+    </div>
+
+    <h3>Ejemplo 2: Callback con setTimeout</h3>
+    <div class="demo-area">
+        <button onclick="ejemploCallbackTimeout()">Ejecutar setTimeout (3 segundos)</button>
+        <div class="output" id="output2">Presiona el botón...</div>
+    </div>
+
+    <div class="code-explanation">
+        <strong>Flujo de ejecución:</strong><br>
+        1. <code>setTimeout(myFunction, 3000)</code> → Programa la ejecución de myFunction<br>
+        2. JavaScript continúa ejecutando el resto del código (no espera)<br>
+        3. Después de 3000ms (3 segundos), ejecuta myFunction<br>
+        4. myFunction actualiza el DOM con el mensaje
+    </div>
+
+    <h3>Ejemplo 3: Callback con Array</h3>
+    <div class="demo-area">
+        <button onclick="ejemploCallbackArray()">Filtrar números positivos</button>
+        <div class="output" id="output3">Presiona el botón...</div>
+    </div>
+
+    <div class="code-explanation">
+        <strong>Explicación paso a paso:</strong><br>
+        1. Array original: <code>[4, 1, -20, -7, 5, 9, -6]</code><br>
+        2. Se pasa <code>(x) => x >= 0</code> como callback a removeNeg<br>
+        3. removeNeg itera cada número y llama al callback: <code>callback(4)</code> → true, lo agrega<br>
+        4. <code>callback(-20)</code> → false, lo ignora<br>
+        5. Retorna solo los positivos: <code>[4, 1, 5, 9]</code>
+    </div>
+</div>
+
+<hr class="separator">
+
+<!--////////////////////////////////////////////////////////////////////////-->
+<!--                        SECCIÓN 2: PROMISES                             -->
+<!--////////////////////////////////////////////////////////////////////////-->
+
+<div class="section">
+    <h2>2️⃣ PROMISES (Promesas)</h2>
+
+    <div class="code-explanation">
+        <strong>¿Qué es una Promise?</strong><br>
+        Un objeto que representa el eventual resultado (o error) de una operación asíncrona.
+        <br><br>
+        <strong>Estados de una Promise:</strong><br>
+        • <code>pending</code> → Esperando (resultado: undefined)<br>
+        • <code>fulfilled</code> → Exitosa (resultado: un valor)<br>
+        • <code>rejected</code> → Fallida (resultado: un error)<br>
+        <br>
+        <strong>Métodos principales:</strong><br>
+        • <code>resolve(valor)</code> → Marca la promesa como exitosa<br>
+        • <code>reject(error)</code> → Marca la promesa como fallida<br>
+        • <code>.then()</code> → Maneja el resultado exitoso<br>
+        • <code>.catch()</code> → Maneja errores
+    </div>
+
+    <h3>Ejemplo 4: Promise Básica</h3>
+    <div class="demo-area">
+        <button onclick="ejemploPromiseBasica()">Ejecutar Promise Básica</button>
+        <div class="output" id="output4">Presiona el botón...</div>
+    </div>
+
+    <div class="code-explanation">
+        <strong>Flujo de ejecución:</strong><br>
+        1. <code>new Promise(function(resolve, reject) {...})</code> → Crea la promesa<br>
+        2. <code>let x = 0</code> → Código productor (puede tardar)<br>
+        3. <code>if (x == 0) resolve("OK")</code> → Cumple la promesa con "OK"<br>
+        4. <code>.then(function(value) {...})</code> → Consume el resultado "OK"<br>
+        5. <code>myDisplayer(value)</code> → Muestra "OK" en pantalla
+    </div>
+
+    <h3>Ejemplo 5: Promise con setTimeout</h3>
+    <div class="demo-area">
+        <button onclick="ejemploPromiseTimeout()">Ejecutar Promise con delay (3s)</button>
+        <div class="output" id="output5">Presiona el botón...</div>
+    </div>
+
+    <div class="code-explanation">
+        <strong>Diferencia con callback tradicional:</strong><br>
+        1. Promise encapsula la operación asíncrona<br>
+        2. <code>setTimeout</code> llama a <code>resolve("I love You !!")</code> después de 3s<br>
+        3. <code>.then()</code> se ejecuta automáticamente cuando la promesa se resuelve<br>
+        4. Más limpio que anidar callbacks (evita "callback hell")
+    </div>
+
+    <h3>Ejemplo 6: Promise con manejo de errores</h3>
+    <div class="demo-area">
+        <button onclick="ejemploPromiseError(true)">Promise exitosa</button>
+        <button onclick="ejemploPromiseError(false)">Promise con error</button>
+        <div class="output" id="output6">Presiona un botón...</div>
+    </div>
+
+    <div class="code-explanation">
+        <strong>Manejo de éxito y error:</strong><br>
+        1. Promise puede llamar <code>resolve()</code> o <code>reject()</code><br>
+        2. <code>.then()</code> recibe dos funciones: una para éxito, otra para error<br>
+        3. Si se llama <code>resolve("OK")</code> → ejecuta la primera función<br>
+        4. Si se llama <code>reject("Error")</code> → ejecuta la segunda función<br>
+        5. Alternativa: usar <code>.catch()</code> para manejar solo errores
+    </div>
+</div>
+
+<hr class="separator">
+
+<!--////////////////////////////////////////////////////////////////////////-->
+<!--                    SECCIÓN 3: ASYNC/AWAIT                              -->
+<!--////////////////////////////////////////////////////////////////////////-->
+
+<div class="section">
+    <h2>3️⃣ ASYNC/AWAIT (Sintaxis moderna)</h2>
+
+    <div class="code-explanation">
+        <strong>¿Qué es Async/Await?</strong><br>
+        Sintaxis más limpia para trabajar con Promises, hace que el código asíncrono se vea síncrono.
+        <br><br>
+        <strong>Palabras clave:</strong><br>
+        • <code>async</code> → Declara que una función retorna una Promise<br>
+        • <code>await</code> → Pausa la ejecución hasta que la Promise se resuelva<br>
+        <br>
+        <strong>⚠️ REGLA:</strong> <code>await</code> solo puede usarse dentro de funciones <code>async</code>
+    </div>
+
+    <h3>Ejemplo 7: Async/Await Básico</h3>
+    <div class="demo-area">
+        <button onclick="ejemploAsyncBasico()">Ejecutar Async/Await</button>
+        <div class="output" id="output7">Presiona el botón...</div>
+    </div>
+
+    <div class="code-explanation">
+        <strong>Transformación de Promise a Async/Await:</strong><br>
+        <strong>Con Promise:</strong><br>
+        <code>myPromise.then(function(value) { mostrar(value); })</code><br>
+        <br>
+        <strong>Con Async/Await:</strong><br>
+        <code>let value = await myPromise; mostrar(value);</code><br>
+        <br>
+        <strong>Flujo paso a paso:</strong><br>
+        1. <code>async function myDisplay()</code> → Declara función asíncrona<br>
+        2. <code>let myPromise = new Promise(...)</code> → Crea promesa que se resuelve inmediatamente<br>
+        3. <code>await myPromise</code> → Pausa la función hasta obtener el resultado<br>
+        4. Continúa con el resultado y actualiza el DOM
+    </div>
+
+    <h3>Ejemplo 8: Async/Await con setTimeout</h3>
+    <div class="demo-area">
+        <button onclick="ejemploAsyncTimeout()">Ejecutar Async con delay (3s)</button>
+        <div class="output" id="output8">Presiona el botón...</div>
+    </div>
+
+    <div class="code-explanation">
+        <strong>Ventaja sobre Promises tradicionales:</strong><br>
+        1. El código se lee de arriba a abajo, como código síncrono<br>
+        2. No necesitas encadenar <code>.then()</code><br>
+        3. <code>await myPromise</code> espera 3 segundos y luego continúa<br>
+        4. El resultado se guarda directamente en una variable
+    </div>
+
+    <h3>Ejemplo 9: Async/Await con manejo de errores</h3>
+    <div class="demo-area">
+        <button onclick="ejemploAsyncError(true)">Async exitoso</button>
+        <button onclick="ejemploAsyncError(false)">Async con error</button>
+        <div class="output" id="output9">Presiona un botón...</div>
+    </div>
+
+    <div class="code-explanation">
+        <strong>Manejo de errores con try/catch:</strong><br>
+        1. Se envuelve el código <code>await</code> en un bloque <code>try</code><br>
+        2. Si la promesa se resuelve con <code>resolve()</code> → ejecuta el código try<br>
+        3. Si la promesa se rechaza con <code>reject()</code> → salta al bloque <code>catch</code><br>
+        4. <code>catch(error)</code> captura el error y lo maneja<br>
+        5. Más legible que manejar errores con <code>.then().catch()</code>
+    </div>
+</div>
+
+<hr class="separator">
+
+<!--////////////////////////////////////////////////////////////////////////-->
+<!--                    SECCIÓN 4: WEB APIs                                 -->
+<!--////////////////////////////////////////////////////////////////////////-->
+
+<div class="section">
+    <h2>4️⃣ WEB APIs - ¿DÓNDE ENTRAN LAS APIs?</h2>
+
+    <div class="warning">
+        <strong>🔥 RESPUESTA DIRECTA: ¿Dónde entra la API?</strong><br><br>
+        Las APIs (Application Programming Interface) son interfaces que permiten que tu código JavaScript se comunique con:<br>
+        • <strong>Navegador:</strong> Geolocalización, LocalStorage, Validación de formularios<br>
+        • <strong>Servidores externos:</strong> Backend propio, APIs de terceros (Twitter, YouTube, OpenAI)<br>
+        • <strong>Funcionalidades del SO:</strong> Acceso a cámara, micrófono, archivos<br>
+        <br>
+        Las APIs se consumen principalmente con <strong>Promises</strong> y <strong>Async/Await</strong> porque son operaciones asíncronas.
+    </div>
+
+    <div class="code-explanation">
+        <strong>Tipos de Web APIs:</strong><br>
+        <br>
+        <strong>1. APIs del Navegador (Browser APIs):</strong><br>
+        • Geolocation API → Obtener ubicación del usuario<br>
+        • Fetch API → Hacer peticiones HTTP<br>
+        • LocalStorage API → Guardar datos en el navegador<br>
+        • Validation API → Validar formularios HTML5<br>
+        • Canvas API → Dibujar gráficos 2D/3D<br>
+        <br>
+        <strong>2. APIs de Terceros (Third-party APIs):</strong><br>
+        • YouTube API → Reproducir videos<br>
+        • Twitter API → Mostrar tweets<br>
+        • Google Maps API → Mostrar mapas<br>
+        • OpenWeather API → Datos del clima<br>
+        • REST APIs propias → Tu backend Node.js/Express
+    </div>
+
+    <h3>Ejemplo 10: Geolocation API (Browser API)</h3>
+    <div class="demo-area">
+        <button onclick="obtenerUbicacion()">Obtener Mi Ubicación</button>
+        <div class="output" id="output14">Presiona el botón...</div>
+    </div>
+
+    <div class="code-explanation">
+        <strong>Flujo de ejecución con Geolocation API:</strong><br>
+        1. <code>navigator.geolocation</code> → Accede a la API de geolocalización del navegador<br>
+        2. <code>getCurrentPosition(callback)</code> → Solicita la ubicación (operación asíncrona)<br>
+        3. El navegador pide permiso al usuario<br>
+        4. <code>callback(position)</code> → Se ejecuta cuando se obtiene la ubicación<br>
+        5. <code>position.coords.latitude</code> → Extrae las coordenadas<br>
+        <br>
+        <strong>⚠️ IMPORTANTE:</strong> Esta es una API de callback antigua, no retorna Promise por defecto.
+    </div>
+
+    <h3>Ejemplo 11: Validation API (Formularios HTML5)</h3>
+    <div class="demo-area">
+        <input id="numInput" type="number" min="100" max="300" required placeholder="Ingresa un número (100-300)">
+        <button onclick="validarInput()">Validar</button>
+        <div class="output" id="output15">Ingresa un número y valida...</div>
+    </div>
+
+    <div class="code-explanation">
+        <strong>Métodos de Validation API:</strong><br>
+        • <code>checkValidity()</code> → Retorna true si el input es válido<br>
+        • <code>validationMessage</code> → Mensaje de error del navegador<br>
+        • <code>validity.rangeOverflow</code> → True si el valor excede el máximo<br>
+        • <code>validity.rangeUnderflow</code> → True si el valor es menor que el mínimo<br>
+        • <code>validity.valueMissing</code> → True si el campo requerido está vacío<br>
+        <br>
+        <strong>Validación paso a paso:</strong><br>
+        1. Usuario ingresa un valor en el input<br>
+        2. <code>document.getElementById("numInput")</code> → Obtiene el elemento<br>
+        3. <code>input.checkValidity()</code> → Verifica si cumple las restricciones HTML5<br>
+        4. Si es inválido, muestra <code>input.validationMessage</code><br>
+        5. No requiere Promises porque es síncrono
+    </div>
+
+    <h3>Ejemplo 12: Fetch API con Async/Await (AQUÍ SE JUNTAN)</h3>
+    <div class="demo-area">
+        <button onclick="obtenerDatosAPI()">Obtener Datos de API (JSONPlaceholder)</button>
+        <div class="output" id="output16">Presiona el botón...</div>
+    </div>
+
+    <div class="code-explanation">
+        <strong>🎯 AQUÍ SE CONECTA TODO: API + Async/Await</strong><br>
+        <br>
+        <strong>Código ejecutado:</strong><br>
+        <code>
+async function obtenerDatosAPI() {<br>
+&nbsp;&nbsp;try {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;const response = await fetch('https://jsonplaceholder.typicode.com/users/1');<br>
+&nbsp;&nbsp;&nbsp;&nbsp;const data = await response.json();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;mostrar(data.name);<br>
+&nbsp;&nbsp;} catch (error) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;mostrar("Error: " + error);<br>
+&nbsp;&nbsp;}<br>
+}
+        </code>
+        <br><br>
+        <strong>Flujo paso a paso:</strong><br>
+        1. <code>fetch(url)</code> → Retorna una Promise que hace petición HTTP GET<br>
+        2. <code>await fetch(...)</code> → Pausa hasta recibir la respuesta del servidor<br>
+        3. <code>response.json()</code> → Retorna otra Promise que convierte la respuesta a JSON<br>
+        4. <code>await response.json()</code> → Pausa hasta que el JSON esté listo<br>
+        5. <code>data.name</code> → Accede a los datos ya parseados<br>
+        6. Si hay error de red, salta al bloque <code>catch</code><br>
+        <br>
+        <strong>⭐ CONCLUSIÓN:</strong> Fetch API es asíncrona, retorna Promises, por eso se usa con async/await.
+    </div>
+</div>
+
+<hr class="separator">
+
+<!--////////////////////////////////////////////////////////////////////////-->
+<!--                    SECCIÓN 5: COMPARACIÓN                              -->
+<!--////////////////////////////////////////////////////////////////////////-->
+
+<div class="section">
+    <h2>5️⃣ COMPARACIÓN: Los 3 enfoques del mismo problema</h2>
+
+    <div class="note">
+        <strong>💻 COMPATIBILIDAD DE NAVEGADORES:</strong><br>
+        • Callbacks: Todos los navegadores (desde siempre)<br>
+        • Promises: Chrome 33+, Firefox 29+, Safari 7.1+ (2014)<br>
+        • Async/Await: Chrome 55+, Firefox 52+, Safari 11+ (2016-2017)<br>
+        • Fetch API: Chrome 42+, Firefox 39+, Safari 10.1+ (2015-2017)<br>
+        <br>
+        Para proyectos modernos con Babel/Webpack, puedes usar async/await sin problemas.
+    </div>
+
+    <div class="code-explanation">
+        <strong>🔥 PATRÓN MERN STACK COMPLETO:</strong><br>
+        <br>
+        <strong>FRONTEND (React):</strong><br>
+        <code>
+useEffect(() => {<br>
+&nbsp;&nbsp;async function cargarDatos() {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;try {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;const res = await fetch('/api/usuarios');<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;const data = await res.json();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;setUsuarios(data);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;} catch (error) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;console.error(error);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;cargarDatos();<br>
+}, []);
+        </code>
+        <br><br>
+        <strong>BACKEND (Node.js/Express):</strong><br>
+        <code>
+app.get('/api/usuarios', async (req, res) => {<br>
+&nbsp;&nbsp;try {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;const usuarios = await Usuario.find();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;res.json(usuarios);<br>
+&nbsp;&nbsp;} catch (error) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;res.status(500).json({ error: error.message });<br>
+&nbsp;&nbsp;}<br>
+});
+        </code>
+    </div>
+</div>
+
+<hr class="separator">
+
+<div style="text-align: center; padding: 20px; color: #888;">
+    <p>📚 Guía completa de JavaScript Asíncrono y Web APIs</p>
+    <p>Callbacks → Promises → Async/Await → APIs</p>
+    <p>Desarrollado con HTML, CSS y JavaScript vanilla</p>
+</div>
+
+<!--////////////////////////////////////////////////////////////////////////-->
+<!--                        JAVASCRIPT CODE                                 -->
+<!--////////////////////////////////////////////////////////////////////////-->
+
+<script>
+// Función helper para mostrar output
+function mostrarOutput(id, mensaje) {
+    document.getElementById(id).innerHTML = mensaje;
+}
+
+////////////////////////////////////////////////////////////////////////
+//                    SECCIÓN 1: CALLBACKS                            //
+////////////////////////////////////////////////////////////////////////
+
+// Ejemplo 1: Callback Básico
+function ejemploCallbackBasico() {
+    function myDisplayer(resultado) {
+        mostrarOutput('output1', `✅ Resultado: ${resultado}`);
+    }
+
+    function myCalculator(num1, num2, myCallback) {
+        let sum = num1 + num2;
+        myCallback(sum); // Ejecuta el callback con el resultado
+    }
+
+    mostrarOutput('output1', '⏳ Calculando...');
+    myCalculator(5, 5, myDisplayer);
+}
+
+// Ejemplo 2: Callback con setTimeout
+function ejemploCallbackTimeout() {
+    mostrarOutput('output2', '⏳ Esperando 3 segundos...');
+
+    setTimeout(function() {
+        mostrarOutput('output2', '✅ ¡I love You! (después de 3 segundos)');
+    }, 3000);
+}
+
+// Ejemplo 3: Callback con Array
+function ejemploCallbackArray() {
+    const myNumbers = [4, 1, -20, -7, 5, 9, -6];
+
+    function removeNeg(numbers, callback) {
+        const myArray = [];
+        for (const x of numbers) {
+            if (callback(x)) {
+                myArray.push(x);
+            }
+        }
+        return myArray;
+    }
+
+    const posNumbers = removeNeg(myNumbers, (x) => x >= 0);
+    mostrarOutput('output3', `Array original: [${myNumbers}]<br>✅ Solo positivos: [${posNumbers}]`);
+}
+
+////////////////////////////////////////////////////////////////////////
+//                    SECCIÓN 2: PROMISES                             //
+////////////////////////////////////////////////////////////////////////
+
+// Ejemplo 4: Promise Básica
+function ejemploPromiseBasica() {
+    mostrarOutput('output4', '⏳ Ejecutando Promise...');
+
+    let myPromise = new Promise(function(resolve, reject) {
+        let x = 0;
+
+        if (x == 0) {
+            resolve("✅ OK - Promise resuelta con éxito");
+        } else {
+            reject("❌ Error - Promise rechazada");
+        }
+    });
+
+    myPromise.then(
+        function(value) { mostrarOutput('output4', value); },
+        function(error) { mostrarOutput('output4', error); }
+    );
+}
+
+// Ejemplo 5: Promise con setTimeout
+function ejemploPromiseTimeout() {
+    mostrarOutput('output5', '⏳ Esperando 3 segundos...');
+
+    let myPromise = new Promise(function(resolve) {
+        setTimeout(function() {
+            resolve("✅ I love You !! (Promise resuelta después de 3s)");
+        }, 3000);
+    });
+
+    myPromise.then(function(value) {
+        mostrarOutput('output5', value);
+    });
+}
+
+// Ejemplo 6: Promise con manejo de errores
+function ejemploPromiseError(exitoso) {
+    mostrarOutput('output6', '⏳ Ejecutando Promise...');
+
+    let myPromise = new Promise(function(resolve, reject) {
+        setTimeout(function() {
+            if (exitoso) {
+                resolve("✅ Operación exitosa");
+            } else {
+                reject("❌ Error: Operación fallida");
+            }
+        }, 1000);
+    });
+
+    myPromise.then(
+        function(value) { mostrarOutput('output6', value); },
+        function(error) { mostrarOutput('output6', error); }
+    );
+}
+
+////////////////////////////////////////////////////////////////////////
+//                    SECCIÓN 3: ASYNC/AWAIT                          //
+////////////////////////////////////////////////////////////////////////
+
+// Ejemplo 7: Async/Await Básico
+async function ejemploAsyncBasico() {
+    mostrarOutput('output7', '⏳ Ejecutando Async/Await...');
+
+    let myPromise = new Promise(function(resolve) {
+        resolve("✅ I love You !! (con async/await)");
+    });
+
+    const resultado = await myPromise;
+    mostrarOutput('output7', resultado);
+}
+
+// Ejemplo 8: Async/Await con setTimeout
+async function ejemploAsyncTimeout() {
+    mostrarOutput('output8', '⏳ Esperando 3 segundos...');
+
+    let myPromise = new Promise(function(resolve) {
+        setTimeout(function() {
+            resolve("✅ I love You !! (async/await después de 3s)");
+        }, 3000);
+    });
+
+    const resultado = await myPromise;
+    mostrarOutput('output8', resultado);
+}
+
+// Ejemplo 9: Async/Await con manejo de errores
+async function ejemploAsyncError(exitoso) {
+    mostrarOutput('output9', '⏳ Ejecutando Async/Await con manejo de errores...');
+
+    try {
+        let myPromise = new Promise(function(resolve, reject) {
+            setTimeout(function() {
+                if (exitoso) {
+                    resolve("✅ Operación exitosa (con try/catch)");
+                } else {
+                    reject("❌ Error capturado en catch block");
+                }
+            }, 1000);
+        });
+
+        const resultado = await myPromise;
+        mostrarOutput('output9', resultado);
+    } catch (error) {
+        mostrarOutput('output9', error);
+    }
+}
+
+////////////////////////////////////////////////////////////////////////
+//                    SECCIÓN 4: WEB APIs                             //
+////////////////////////////////////////////////////////////////////////
+
+// Ejemplo 10: Geolocation API
+function obtenerUbicacion() {
+    mostrarOutput('output14', '⏳ Solicitando ubicación...');
+
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+            function(position) {
+                const lat = position.coords.latitude;
+                const lon = position.coords.longitude;
+                mostrarOutput('output14',
+                    `✅ Ubicación obtenida:<br>Latitud: ${lat.toFixed(6)}<br>Longitud: ${lon.toFixed(6)}`
+                );
+            },
+            function(error) {
+                mostrarOutput('output14', `❌ Error: ${error.message}`);
+            }
+        );
+    } else {
+        mostrarOutput('output14', '❌ Geolocation no soportada por este navegador');
+    }
+}
+
+// Ejemplo 11: Validation API
+function validarInput() {
+    const input = document.getElementById("numInput");
+
+    if (!input.checkValidity()) {
+        // El input no es válido
+        mostrarOutput('output15', `❌ Error: ${input.validationMessage}`);
+
+        // Verificar tipos específicos de error
+        if (input.validity.rangeOverflow) {
+            mostrarOutput('output15', '❌ El valor es mayor que 300');
+        } else if (input.validity.rangeUnderflow) {
+            mostrarOutput('output15', '❌ El valor es menor que 100');
+        } else if (input.validity.valueMissing) {
+            mostrarOutput('output15', '❌ Este campo es requerido');
+        }
+    } else {
+        // El input es válido
+        mostrarOutput('output15', `✅ Valor válido: ${input.value}`);
+    }
+}
+
+// Ejemplo 12: Fetch API con Async/Await
+async function obtenerDatosAPI() {
+    mostrarOutput('output16', '⏳ Obteniendo datos de la API...');
+
+    try {
+        // Hacer petición GET a JSONPlaceholder (API de prueba)
+        const response = await fetch('https://jsonplaceholder.typicode.com/users/1');
+
+        // Verificar si la respuesta fue exitosa
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        // Convertir respuesta a JSON
+        const data = await response.json();
+
+        // Mostrar datos
+        mostrarOutput('output16',
+            `✅ Usuario obtenido:<br>` +
+            `Nombre: ${data.name}<br>` +
+            `Email: ${data.email}<br>` +
+            `Ciudad: ${data.address.city}`
+        );
+    } catch (error) {
+        mostrarOutput('output16', `❌ Error: ${error.message}`);
+    }
+}
+
+////////////////////////////////////////////////////////////////////////
+//                    SECCIÓN 5: COMPARACIÓN                          //
+////////////////////////////////////////////////////////////////////////
+
+async function compararEnfoques() {
+    mostrarOutput('output10', '⏳ Iniciando comparación...<br><br>');
+
+    // 1. CALLBACK
+    mostrarOutput('output10', document.getElementById('output10').innerHTML +
+        '1️⃣ CALLBACK: Esperando 2 segundos...<br>');
+
+    await new Promise(resolve => {
+        setTimeout(function() {
+            mostrarOutput('output10', document.getElementById('output10').innerHTML +
+                '✅ Callback completado<br><br>');
+            resolve();
+        }, 2000);
+    });
+
+    // 2. PROMISE
+    mostrarOutput('output10', document.getElementById('output10').innerHTML +
+        '2️⃣ PROMISE: Esperando 2 segundos...<br>');
+
+    await new Promise(function(resolve) {
+        setTimeout(function() {
+            resolve('✅ Promise completada<br><br>');
+        }, 2000);
+    }).then(function(mensaje) {
+        mostrarOutput('output10', document.getElementById('output10').innerHTML + mensaje);
+    });
+
+    // 3. ASYNC/AWAIT
+    mostrarOutput('output10', document.getElementById('output10').innerHTML +
+        '3️⃣ ASYNC/AWAIT: Esperando 2 segundos...<br>');
+
+    await new Promise(resolve => setTimeout(resolve, 2000));
+
+    mostrarOutput('output10', document.getElementById('output10').innerHTML +
+        '✅ Async/Await completado<br><br>' +
+        '🎉 Comparación terminada!');
+}
+
+////////////////////////////////////////////////////////////////////////
+//                    SECCIÓN 6: EJEMPLO REAL COMPLETO                //
+////////////////////////////////////////////////////////////////////////
+
+// Ejemplo con Callback (XMLHttpRequest - antiguo)
+function ejemploRealCallback() {
+    mostrarOutput('output11', '⏳ Cargando con XMLHttpRequest (callback)...');
+
+    const xhr = new XMLHttpRequest();
+    xhr.open('GET', 'https://jsonplaceholder.typicode.com/users/2');
+
+    xhr.onload = function() {
+        if (xhr.status === 200) {
+            const data = JSON.parse(xhr.responseText);
+            mostrarOutput('output11',
+                `✅ Usuario: ${data.name}<br>` +
+                `Empresa: ${data.company.name}<br>` +
+                `Método: XMLHttpRequest (callback antiguo)`
+            );
+        } else {
+            mostrarOutput('output11', `❌ Error: ${xhr.status}`);
+        }
+    };
+
+    xhr.onerror = function() {
+        mostrarOutput('output11', '❌ Error de red');
+    };
+
+    xhr.send();
+}
+
+// Ejemplo con Promise (Fetch)
+function ejemploRealPromise() {
+    mostrarOutput('output12', '⏳ Cargando con Fetch (promise)...');
+
+    fetch('https://jsonplaceholder.typicode.com/users/3')
+        .then(function(response) {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(function(data) {
+            mostrarOutput('output12',
+                `✅ Usuario: ${data.name}<br>` +
+                `Email: ${data.email}<br>` +
+                `Método: Fetch API con .then()`
+            );
+        })
+        .catch(function(error) {
+            mostrarOutput('output12', `❌ Error: ${error.message}`);
+        });
+}
+
+// Ejemplo con Async/Await (Fetch - RECOMENDADO)
+async function ejemploRealAsync() {
+    mostrarOutput('output13', '⏳ Cargando con Fetch (async/await)...');
+
+    try {
+        const response = await fetch('https://jsonplaceholder.typicode.com/users/4');
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        mostrarOutput('output13',
+            `✅ Usuario: ${data.name}<br>` +
+            `Teléfono: ${data.phone}<br>` +
+            `Website: ${data.website}<br>` +
+            `Método: Fetch API con async/await ⭐`
+        );
+    } catch (error) {
+        mostrarOutput('output13', `❌ Error: ${error.message}`);
+    }
+}
+</script>
+
+</body>
+</html>>Problema:</strong> Esperar 2 segundos y luego mostrar un mensaje
+    </div>
+
+    <div class="demo-area">
+        <button onclick="compararEnfoques()">Ejecutar los 3 enfoques (2s cada uno)</button>
+        <div class="output" id="output10">Presiona el botón...</div>
+    </div>
+
+    <div class="code-explanation">
+        <strong>1. CALLBACK (estilo antiguo):</strong><br>
+        <code>setTimeout(function() { mostrar("Mensaje"); }, 2000);</code><br>
+        ✅ Simple para casos básicos<br>
+        ❌ Se vuelve confuso con operaciones anidadas ("callback hell")<br>
+        <br>
+        <strong>2. PROMISE (ES6 - 2015):</strong><br>
+        <code>new Promise(resolve => setTimeout(() => resolve("Mensaje"), 2000)).then(mostrar);</code><br>
+        ✅ Evita el callback hell<br>
+        ✅ Mejor manejo de errores<br>
+        ❌ Sintaxis un poco verbosa<br>
+        <br>
+        <strong>3. ASYNC/AWAIT (ES2017):</strong><br>
+        <code>await new Promise(resolve => setTimeout(() => resolve("Mensaje"), 2000));</code><br>
+        ✅ Sintaxis más limpia y legible<br>
+        ✅ Se lee como código síncrono<br>
+        ✅ Mejor manejo de errores con try/catch<br>
+        ⭐ <strong>RECOMENDADO para proyectos modernos</strong>
+    </div>
+</div>
+
+<hr class="separator">
+
+<!--////////////////////////////////////////////////////////////////////////-->
+<!--                    SECCIÓN 6: EJEMPLO REAL COMPLETO                    -->
+<!--////////////////////////////////////////////////////////////////////////-->
+
+<div class="section">
+    <h2>6️⃣ EJEMPLO REAL: Aplicación Completa con API</h2>
+
+    <div class="note">
+        <strong>Escenario MERN Stack:</strong> Obtener lista de usuarios desde una API REST
+    </div>
+
+    <h3>Con Callback (XMLHttpRequest - estilo antiguo)</h3>
+    <div class="demo-area">
+        <button onclick="ejemploRealCallback()">Cargar con Callback (XMLHttpRequest)</button>
+        <div class="output" id="output11">Presiona el botón...</div>
+    </div>
+
+    <h3>Con Promise (Fetch API)</h3>
+    <div class="demo-area">
+        <button onclick="ejemploRealPromise()">Cargar con Promise (Fetch)</button>
+        <div class="output" id="output12">Presiona el botón...</div>
+    </div>
+
+    <h3>Con Async/Await (Fetch API - RECOMENDADO)</h3>
+    <div class="demo-area">
+        <button onclick="ejemploRealAsync()">Cargar con Async/Await (Fetch)</button>
+        <div class="output" id="output13">Presiona el botón...</div>
+    </div>
+
+    <div class="code-explanation">
+        <strong>Comparación de los 3 enfoques para hacer peticiones HTTP:</strong><br>
+        <br>
+        <strong>1. CALLBACK con XMLHttpRequest:</strong><br>
+        • API antigua (pre-ES6)<br>
+        • Requiere configurar manualmente onload, onerror, etc.<br>
+        • Propenso a "callback hell" si encadenas peticiones<br>
+        • Todavía funciona pero NO recomendado<br>
+        <br>
+        <strong>2. PROMISE con Fetch:</strong><br>
+        • API moderna del navegador<br>
+        • Retorna Promises automáticamente<br>
+        • Encadenas con .then().then().catch()<br>
+        • Mejor que XMLHttpRequest pero sintaxis verbosa<br>
+        <br>
+        <strong>3. ASYNC/AWAIT con Fetch:</strong><br>
+        • ⭐ <strong>RECOMENDADO</strong> para MERN Stack<br>
+        • Código se lee de forma lineal<br>
+        • Manejo de errores con try/catch<br>
+        • Más fácil de depurar y mantener
+    </div>
+</div>
+
+<hr class="separator">
+
+<!--////////////////////////////////////////////////////////////////////////-->
+<!--                    SECCIÓN 7: RESUMEN Y MEJORES PRÁCTICAS              -->
+<!--////////////////////////////////////////////////////////////////////////-->
+
+<div class="section">
+    <h2>7️⃣ RESUMEN Y MEJORES PRÁCTICAS</h2>
+
+    <div class="code-explanation">
+        <strong>📋 CUÁNDO USAR CADA UNO:</strong><br>
+        <br>
+        <strong>CALLBACKS:</strong><br>
+        • Event listeners: <code>button.addEventListener('click', callback)</code><br>
+        • setTimeout/setInterval simples<br>
+        • APIs antiguas que solo aceptan callbacks (Geolocation)<br>
+        <br>
+        <strong>PROMISES:</strong><br>
+        • Cuando usas Fetch API o librerías que retornan Promises (axios)<br>
+        • Encadenar operaciones: <code>.then().then().catch()</code><br>
+        • <code>Promise.all()</code> para ejecutar múltiples promesas en paralelo<br>
+        <br>
+        <strong>ASYNC/AWAIT:</strong><br>
+        • ⭐ Para la mayoría de código asíncrono moderno<br>
+        • Consumir APIs REST (fetch, axios)<br>
+        • Operaciones asíncronas múltiples con lógica compleja<br>
+        • Manejo de errores más claro con try/catch<br>
+        <br>
+        <strong>WEB APIs:</strong><br>
+        • <code>fetch()</code> → Peticiones HTTP (retorna Promise)<br>
+        • <code>navigator.geolocation</code> → Ubicación (usa callback)<br>
+        • <code>localStorage</code> → Almacenamiento (síncrono, no requiere async)<br>
+        • <code>input.checkValidity()</code> → Validación (síncrono)<br>
+        <br>
+        <strong>⚠️ ERRORES COMUNES:</strong><br>
+        1. Pasar callback con paréntesis: <code>setTimeout(myFunc(), 1000)</code> ❌<br>
+        → Correcto: <code>setTimeout(myFunc, 1000)</code> ✅<br>
+        <br>
+        2. Olvidar <code>await</code> en funciones async:<br>
+        → Sin await: retorna Promise pendiente<br>
+        → Con await: retorna el valor resuelto<br>
+        <br>
+        3. No manejar errores en APIs:<br>
+        → Siempre usar <code>try/catch</code> con async/await<br>
+        → O <code>.catch()</code> con Promises<br>
+        <br>
+        4. Usar <code>await</code> fuera de función <code>async</code>:<br>
+        → Solo funciona dentro de funciones declaradas como <code>async</code><br>
+        <br>
+        5. No verificar status en fetch:<br>
+        → <code>fetch()</code> no rechaza en errores HTTP 404, 500<br>
+        → Verificar <code>response.ok</code> manualmente<br>
+        <br>
+        <strong>🎯 RECOMENDACIÓN PARA MERN STACK:</strong><br>
+        • <strong>Backend (Node.js/Express):</strong> async/await con try/catch<br>
+        • <strong>Frontend (React):</strong> async/await dentro de useEffect o event handlers<br>
+        • <strong>Peticiones HTTP:</strong> fetch() o axios con async/await<br>
+        • <strong>Validación de formularios:</strong> Validation API del navegador<br>
+        • <strong>Operaciones en paralelo:</strong> Promise.all([fetch1, fetch2])
+    </div>
+
+    <div class="note">
+        <strong

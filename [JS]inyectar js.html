@@ -1,0 +1,187 @@
+<!doctype html>
+<html>
+  <body>
+    <h1>JavaScript Nested if</h1>
+    <!-- /////////////////////////////////////////////////////////////////////////////////// -->
+    <!-- // EJEMPLOS DE CONDICIONALES
+    <!-- /////////////////////////////////////////////////////////////////////////////////// -->
+
+    <!--EJ.1: --- CONDICIONALES --- -->
+    <p id="demo"></p>
+
+    <script>
+// ////////////////////////////////////////////////////////////////////////////////
+// INYECCIÓN DE HTML EN EL DOM - MÉTODOS MODERNOS
+// ////////////////////////////////////////////////////////////////////////////////
+
+// ❌ MÉTODO OBSOLETO (No usar en producción)
+document.write("Hello World!<br>"); // Bloquea el parsing, sobrescribe todo si se usa después del load
+
+// ✅ MÉTODO 1: innerHTML (Rápido pero cuidado con XSS)
+const agregar = document.getElementById("demo");
+agregar.innerHTML = "<h2>Hello World! 2</h2>";
+
+// ✅ MÉTODO 2: Template Literals (Sintaxis similar a JSX)
+const Doom = ["Diego", "Maria", "Juan", { name: "Pedro", age: 30 }];
+
+const templateHTML = `
+  <div class="user-list">
+    <h3>Usuarios:</h3>
+    <ul>
+      <li>${Doom[0]}</li>
+<!-- $ para llamar variables en template literals. [] Para llamar la posicion (0-3) -->
+      <li>${Doom[1]}</li>
+      <li>${Doom[2]}</li>
+      <li>
+        <strong>${Doom[3].name}</strong> - ${Doom[3].age} años
+<!-- .name y .age para llamar las propiedades [ATRIBUTOS] la posicion 3 -->
+      </li>
+    </ul>
+  </div>
+`;
+
+demo.innerHTML = templateHTML;
+
+// ✅ MÉTODO 3: createElement + append (Más seguro, mejor performance)
+// Properties usados: textContent, className, id, src, href, etc.
+function crearUserCard(user) {
+  const card = document.createElement('div');
+  card.className = 'user-card';
+
+  const nombre = document.createElement('h4');
+  nombre.textContent = user.name;
+
+  const edad = document.createElement('p');
+  edad.textContent = `Edad: ${user.age}`;
+
+  card.append(nombre, edad);
+  return card;
+}
+
+// Uso:
+demo.appendChild(crearUserCard(Doom[3]));
+
+// ✅ MÉTODO 4: Función Helper estilo JSX (Lo más cercano a React)
+function html(strings, ...values) {
+  const template = strings.reduce((acc, str, i) =>
+    acc + str + (values[i] || ''), ''
+  );
+
+  const temp = document.createElement('template');
+  temp.innerHTML = template.trim();
+  return temp.content.firstChild;
+}
+
+// Uso (sintaxis casi idéntica a JSX):
+const userCard = html`
+  <div class="card">
+    <h3>${Doom[3].name}</h3>
+    <p>Edad: ${Doom[3].age}</p>
+    <button onclick="alert('Hola ${Doom[3].name}')">Saludar</button>
+  </div>
+`;
+
+demo.appendChild(userCard);
+
+// ✅ MÉTODO 5: Renderizado de Lista (como .map() en React)
+function renderUserList(users) {
+  const container = document.createElement('ul');
+
+  users.forEach(user => {
+    const li = document.createElement('li');
+    li.textContent = typeof user === 'string' ? user : `${user.name} (${user.age})`;
+    container.appendChild(li);
+  });
+
+  return container;
+}
+
+demo.appendChild(renderUserList(Doom));
+
+// ✅ MÉTODO 6: Sistema de Componentes Reutilizables (Arquitectura tipo React)
+const Component = {
+  UserCard: (user) => html`
+    <div class="user-card">
+      <h3>${user.name}</h3>
+      <span class="badge">${user.age} años</span>
+    </div>
+  `,
+
+  UserList: (users) => {
+    const container = document.createElement('div');
+    users.forEach(user => {
+      if (typeof user === 'object') {
+        container.appendChild(Component.UserCard(user));
+      }
+    });
+    return container;
+  }
+};
+
+// Uso:
+demo.appendChild(Component.UserList(Doom));
+
+// ////////////////////////////////////////////////////////////////////////////////
+// COMPARACIÓN: JSX vs Vanilla JS
+// ////////////////////////////////////////////////////////////////////////////////
+
+/*
+REACT/JSX:
+  return (
+    <div>
+      <h1>{user.name}</h1>
+      <p>Edad: {user.age}</p>
+    </div>
+  );
+
+VANILLA JS EQUIVALENTE:
+  const div = html`
+    <div>
+      <h1>${user.name}</h1>
+      <p>Edad: ${user.age}</p>
+    </div>
+  `;
+
+  return div;
+*/
+
+// ////////////////////////////////////////////////////////////////////////////////
+// BONUS: Mini Framework Reactivo (Actualización automática)
+// ////////////////////////////////////////////////////////////////////////////////
+
+function createReactiveElement(initialData, template) {
+  let data = initialData;
+  let element = template(data);
+
+  const update = (newData) => {
+    data = { ...data, ...newData };
+    const newElement = template(data);
+    element.replaceWith(newElement);
+    element = newElement;
+  };
+
+  return { element, update };
+}
+
+// Uso:
+const reactive = createReactiveElement(
+  Doom[3],
+  (user) => html`
+    <div class="reactive-card">
+      <h3>${user.name}</h3>
+      <p>${user.age} años</p>
+    </div>
+  `
+);
+
+demo.appendChild(reactive.element);
+
+// Actualizar después de 2 segundos
+setTimeout(() => {
+  reactive.update({ age: 31 }); // Se re-renderiza automáticamente
+}, 2000);
+    </script>
+<!-- Eso es lo que puedes hacer en un js/ts -->
+<!-- Aun asi TS permite el uso de plantillas html para renderizar [Con angular solamente??]-->
+  </body>
+</html>
